@@ -19,6 +19,8 @@ namespace KendoUIWebApi.UI.ViewModels
         public decimal Valor { get; set; }
 
         public bool Disponivel { get; set; }
+
+        [DisplayName("Cliente")]
         public int ClienteId { get; set; }
 
         public virtual ClienteViewModel Cliente { get; set; }
