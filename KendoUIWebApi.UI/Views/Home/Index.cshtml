@@ -1,24 +1,85 @@
-﻿<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS, and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-</div>
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>ASP.NET Web API is a framework that makes it easy to build HTTP services that reach
-        a broad range of clients, including browsers and mobile devices. ASP.NET Web API
-        is an ideal platform for building RESTful applications on the .NET Framework.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301870">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301871">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301872">Learn more &raquo;</a></p>
-    </div>
-</div>
+﻿
+<h2>Grid de Clientes com Kendo UI por Web Api</h2>
+
+<div id="grid" class="table"></div>
+
+@section scripts{
+
+    <script type="text/javascript">
+        var dataSource = new kendo.data.DataSource({
+            transport: {
+                create: {
+                    url: "http://localhost:51127/api/Values?json=true",
+                    contentType: "application/json",
+                    type: "POST"
+                },
+                read: {
+                    url: "http://localhost:51127/api/Values?json=true",
+                    dataType: "json"
+                },
+                update: {
+                    url: function (values) {
+                        alert('update');
+                        return "http://localhost:51127/api/Values/" + values.ClienteId + "?json=true";
+                    },
+                    contentType: "application/json",
+                    type: "PUT"
+                },
+                destroy: {
+                    url: function (values) {
+                        alert('destroy');
+                        return "http://localhost:51127/api/Values/" + values.ClienteId + "?json=true";
+                    },
+                    contentType: "application/json",
+                    type: "DELETE"
+                },
+                parameterMap: function (data, operation) {
+                    return JSON.stringify(data);
+                }
+            },
+            serverPaging: true,
+            //serverFiltering: true,
+            //serverSorting: true,
+            pageSize: 10,
+            schema: {
+                model: {
+                    id: "ClienteId",
+                    Nome: "Nome",
+                    Sobrenome: "Sobrenome",
+                    Email: "E-mail",
+                    Ativo: "Disponivel"
+                }
+            }
+        });
+
+        $(document).ready(function () {
+            $("#grid").kendoGrid({
+                dataSource: dataSource,
+                height: 400,
+                columns: [
+                    { field: "Nome", width: "150px", validation: { required: true } },
+                    { field: "Sobrenome", width: "150px" },
+                    { field: "Email", validation: { required: true } },
+                    { field: "Ativo", type: "boolean", template: "#= Ativo ? 'Sim' : 'Não' #", editor: customBoolEditor },
+                    { command: [{ name: "destroy", text: "Excluir" }], title: "", width: "110px" }
+                ],
+                toolbar: [
+                    { name: "create", text: "Novo" },
+                    { name: "save", text: "Salvar as alterações" },
+                    { name: "cancel", text: "Cancelar" }
+                ],
+                navigatable: true,
+                //sortable: true,
+                //filterable: true,
+                editable: true,
+                pageable: true
+            });
+        });
+
+        function customBoolEditor(container, options) {
+            var guid = kendo.guid();
+            $('<input class="k-checkbox" id="' + guid + '" type="checkbox" name="Ativo" data-type="boolean" data-bind="checked:Ativo">').appendTo(container);
+            $('<label class="k-checkbox-label" for="' + guid + '">​</label>').appendTo(container);
+        }
+    </script>
+}

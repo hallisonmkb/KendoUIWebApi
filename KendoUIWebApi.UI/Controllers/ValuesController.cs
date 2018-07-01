@@ -1,39 +1,67 @@
-﻿using System;
+﻿using AutoMapper;
+using KendoUIWebApi.Application.Interfaces;
+using KendoUIWebApi.Domain.Entities;
+using KendoUIWebApi.UI.ViewModels;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Web.Http;
+//using Newtonsoft.Json;
 
 namespace KendoUIWebApi.UI.Controllers
 {
     public class ValuesController : ApiController
     {
-        // GET api/values
-        public IEnumerable<string> Get()
+        private readonly IProdutoAppService _produtoApp;
+        private readonly IClienteAppService _clienteApp;
+
+        public ValuesController(IProdutoAppService produtoApp, IClienteAppService clienteApp)
         {
-            return new string[] { "value1", "value2" };
+            _produtoApp = produtoApp;
+            _clienteApp = clienteApp;
         }
 
-        // GET api/values/5
-        public string Get(int id)
+        //Select
+        public IEnumerable<ClienteViewModel> Get()
         {
-            return "value";
+            var clienteViewModel = Mapper.Map<IEnumerable<Cliente>, IEnumerable<ClienteViewModel>>(_clienteApp.GetAll());
+
+            //return JsonConvert.SerializeObject(clienteViewModel);
+            return clienteViewModel;
         }
 
-        // POST api/values
-        public void Post([FromBody]string value)
+        //Insert
+        public void Post(ClienteViewModel clienteViewModel)
         {
+            if (clienteViewModel.Nome != null && clienteViewModel.Email != null)
+            {
+                var cliente = Mapper.Map<ClienteViewModel, Cliente>(clienteViewModel);
+
+                if (clienteViewModel.ClienteId == 0)
+                {
+                    _clienteApp.Add(cliente);
+                }
+                else
+                {
+                    _clienteApp.Update(cliente);
+                }
+            }
         }
 
-        // PUT api/values/5
-        public void Put(int id, [FromBody]string value)
+        //Update
+        public void Put(ClienteViewModel clienteViewModel)
         {
+            if (ModelState.IsValid)
+            {
+                var cliente = Mapper.Map<ClienteViewModel, Cliente>(clienteViewModel);
+                _clienteApp.Update(cliente);
+            }
         }
 
-        // DELETE api/values/5
+        //Delete
         public void Delete(int id)
         {
+            var cliente = _clienteApp.GetById(id);
+            _clienteApp.Remove(cliente);
         }
     }
 }

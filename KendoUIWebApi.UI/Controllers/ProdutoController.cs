@@ -9,7 +9,6 @@ namespace KendoUIWebApi.MVC.Controllers
 {
     public class ProdutoController : Controller
     {
-        // GET: Produto
         private readonly IProdutoAppService _produtoApp;
         private readonly IClienteAppService _clienteApp;
 
