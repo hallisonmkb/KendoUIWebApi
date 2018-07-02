@@ -9,18 +9,18 @@
         var dataSource = new kendo.data.DataSource({
             transport: {
                 create: {
-                    url: "http://localhost:51127/api/Values?json=true",
+                    url: "../api/Values?json=true",
                     contentType: "application/json",
                     type: "POST"
                 },
                 read: {
-                    url: "http://localhost:51127/api/Values?json=true",
+                    url: "../api/Values?json=true",
                     dataType: "json"
                 },
                 update: {
                     url: function (values) {
                         alert('update');
-                        return "http://localhost:51127/api/Values/" + values.ClienteId + "?json=true";
+                        return "../api/Values/" + values.ClienteId + "?json=true";
                     },
                     contentType: "application/json",
                     type: "PUT"
@@ -28,7 +28,7 @@
                 destroy: {
                     url: function (values) {
                         alert('destroy');
-                        return "http://localhost:51127/api/Values/" + values.ClienteId + "?json=true";
+                        return "../api/Values/" + values.ClienteId + "?json=true";
                     },
                     contentType: "application/json",
                     type: "DELETE"
