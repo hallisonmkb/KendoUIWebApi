@@ -21,6 +21,7 @@ namespace KendoUIWebApi.UI.Controllers
         }
 
         //Select
+        [Authorize]
         public IEnumerable<ClienteViewModel> Get()
         {
             var clienteViewModel = Mapper.Map<IEnumerable<Cliente>, IEnumerable<ClienteViewModel>>(_clienteApp.GetAll());
@@ -30,6 +31,7 @@ namespace KendoUIWebApi.UI.Controllers
         }
 
         //Insert
+        [Authorize]
         public void Post(ClienteViewModel clienteViewModel)
         {
             if (clienteViewModel.Nome != null && clienteViewModel.Email != null)
@@ -48,6 +50,7 @@ namespace KendoUIWebApi.UI.Controllers
         }
 
         //Update
+        [Authorize]
         public void Put(ClienteViewModel clienteViewModel)
         {
             if (ModelState.IsValid)
@@ -58,6 +61,7 @@ namespace KendoUIWebApi.UI.Controllers
         }
 
         //Delete
+        [Authorize]
         public void Delete(int id)
         {
             var cliente = _clienteApp.GetById(id);
